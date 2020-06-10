@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use App\Project;
 
 class ProjectController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = auth()->user()->projects;
         
         return view('projects.index', compact('projects'));
     }
@@ -26,7 +28,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('projects.create');
     }
 
     /**
@@ -37,14 +39,11 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required',
-            'description' => 'required'
-        ]);
 
-        Project::create($validated);
 
-        return redirect()->route('projects.index');
+        $project = auth()->user()->projects()->create($this->validateRequest());
+
+        return redirect($project->path());
 
     }
 
@@ -56,6 +55,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        if (auth()->user()->isNot($project->owner)) {
+            abort(403);
+        }
+
         return view('projects.show',compact('project'));
     }
 
@@ -65,9 +68,11 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Project $project)
     {
-        //
+
+        return view('projects.edit', compact('project'));
+        
     }
 
     /**
@@ -77,9 +82,10 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $form)
     {
-        //
+
+        return redirect($form->save()->path());
     }
 
     /**
@@ -91,5 +97,17 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    protected function validateRequest(){
+
+        return request()->validate([
+            'title' => 'sometimes|required',
+            'description' => 'sometimes|required',
+            'notes' => 'nullable'
+        ]);
+
+
     }
 }
