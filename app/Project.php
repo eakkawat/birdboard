@@ -2,12 +2,17 @@
 
 namespace App;
 
+use App\Providers\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
-use PDO;
 
 class Project extends Model
 {
+    use RecordActivity;
+    
     protected $guarded = [];
+
+    public static $recordableEvents = ['created', 'updated'];
+
 
     public function path(){
         
@@ -34,7 +39,23 @@ class Project extends Model
 
     public function activities(){
 
-        return $this->hasMany('App\Activity');
+        return $this->hasMany('App\Activity')->latest();
         
     }
+
+
+    public function invite($user){
+
+        $this->members()->attach($user);
+        
+    }
+
+
+    public function members(){
+
+        return $this->belongsToMany('App\User', 'project_members');
+        
+    }
+
+   
 }

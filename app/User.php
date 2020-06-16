@@ -42,4 +42,16 @@ class User extends Authenticatable
         return $this->hasMany(Project::class, 'owner_id')->latest('updated_at');
 
     }
+
+
+    public function accessibleProjects(){
+
+        $projectsCreated = $this->projects;
+
+        $projects_id = \DB::table('project_members')->where('user_id', $this->id)->pluck('project_id');
+        $projectsInvited = Project::find($projects_id);
+
+        return $projectsCreated->merge($projectsInvited);
+        
+    }
 }

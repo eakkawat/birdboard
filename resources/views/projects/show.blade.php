@@ -80,6 +80,9 @@
             <div class="lg:w-1/4 lg:pl-3">
                 <div class="description">
                     @include('projects._card')
+
+                    @include('projects.activities._activities')
+                    
                 </div>
             </div>
     

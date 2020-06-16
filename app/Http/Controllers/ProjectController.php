@@ -16,7 +16,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = auth()->user()->projects;
+
+        $projects = auth()->user()->accesibleProjects();
         
         return view('projects.index', compact('projects'));
     }
@@ -94,9 +95,14 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        //
+        $this->authorize('update', $project);
+
+        $project->delete();
+
+        return redirect()->route('projects.index');
+        
     }
 
 
@@ -110,4 +116,6 @@ class ProjectController extends Controller
 
 
     }
+
+
 }

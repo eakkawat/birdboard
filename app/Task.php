@@ -2,10 +2,12 @@
 
 namespace App;
 
+use App\Providers\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use RecordActivity;
 
     protected $guarded = [];
 
@@ -13,36 +15,8 @@ class Task extends Model
 
     protected $casts = ['completed' => 'boolean'];
 
+    protected static $recordableEvents = ['created', 'deleted'];
 
-    protected static function boot(){
-
-        parent::boot();
-
-        static::created(function ($task){
-
-            Activity::create([
-
-                'project_id' => $task->project->id,
-                'description' => 'created task'
-                
-            ]);
-            
-        });
-
-
-        static::updated(function ($task){
-
-            if( !$task->completed) return;
-
-            Activity::create([
-                'project_id' => $task->project->id,
-                'description' => 'completed task'
-            ]);
-            
-        });
-
-        
-    }
 
     
     public function project(){
@@ -57,7 +31,25 @@ class Task extends Model
 
     public function complete(){
 
+        $this->recordActivity('completed task');
+
         $this->update(['completed' => true]);
+        
+    }
+
+
+    public function incomplete(){
+
+        $this->recordActivity('incompleted task');
+
+        $this->update(['completed' => false]);
+        
+    }
+
+
+    public function activities(){
+
+        return $this->morphMany('App\Activity','subject')->latest();
         
     }
 }

@@ -64,6 +64,41 @@ class ProjectsTest extends TestCase
 
 
     /** @test */
+    public function a_user_can_delete_a_project(){
+
+        $this->withoutExceptionHandling();
+
+        $user = $this->signIn();
+        
+        $project = ProjectFactory::ownedBy($user)->create();
+
+        $this->delete($project->path())
+            ->assertRedirect(route('projects.index'));
+
+        
+        $this->assertDatabaseMissing('projects', $project->only('id'));
+
+
+
+        
+    }
+
+
+    /** @test */
+    public function guess_cannot_delete_project(){
+
+        $project = factory('App\Project')->create();
+
+        $this->delete($project->path())->assertRedirect(route('login'));
+
+        $this->signIn();
+
+        $this->delete($project->path())->assertStatus(403);
+        
+    }
+
+
+    /** @test */
     public function a_user_can_update_a_proejct(){
 
         $this->withoutExceptionHandling();
@@ -172,5 +207,22 @@ class ProjectsTest extends TestCase
         $project = factory('App\Project')->create();
 
         $this->patch($project->path(), ['notes' => 'updated'])->assertStatus(403);
+    }
+
+
+    /** @test */
+    public function a_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard(){
+
+        $user_a = factory('App\User')->create();
+
+        $project_a = ProjectFactory::ownedBy($user_a)->create();
+        
+        $user_b = factory('App\User')->create();
+
+        $project_a->invite($user_b);
+   
+
+        $this->actingAs($user_b)->get(route('projects.index'))->assertSeeText($project_a->title);
+        
     }
 }

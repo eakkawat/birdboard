@@ -1,0 +1,1 @@
+incompleted {{ $activity->subject->body }}
