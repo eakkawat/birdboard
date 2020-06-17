@@ -18,7 +18,7 @@ class ProjectController extends Controller
     {
 
         $projects = auth()->user()->accessibleProjects();
-        
+
         return view('projects.index', compact('projects'));
     }
 
@@ -45,7 +45,6 @@ class ProjectController extends Controller
         $project = auth()->user()->projects()->create($this->validateRequest());
 
         return redirect($project->path());
-
     }
 
     /**
@@ -56,11 +55,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        if (auth()->user()->isNot($project->owner)) {
-            abort(403);
-        }
+        $this->authorize('update', $project);
 
-        return view('projects.show',compact('project'));
+        return view('projects.show', compact('project'));
     }
 
     /**
@@ -73,7 +70,6 @@ class ProjectController extends Controller
     {
 
         return view('projects.edit', compact('project'));
-        
     }
 
     /**
@@ -97,25 +93,21 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $this->authorize('update', $project);
+        $this->authorize('manage', $project);
 
         $project->delete();
 
         return redirect()->route('projects.index');
-        
     }
 
 
-    protected function validateRequest(){
+    protected function validateRequest()
+    {
 
         return request()->validate([
             'title' => 'sometimes|required',
             'description' => 'sometimes|required',
             'notes' => 'nullable'
         ]);
-
-
     }
-
-
 }

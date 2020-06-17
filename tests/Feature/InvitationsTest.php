@@ -23,17 +23,18 @@ class InvitationsTest extends TestCase
         $john = factory('App\User')->create();
         $chris = factory('App\User')->create();
 
-        $this->actingAs($chris)
+        $invitationAssertion = function() use ($chris, $john, $project){
+            $this->actingAs($chris)
             ->patch(route('projects.invite',$project),[
             'email' => $john->email])
             ->assertStatus(403);
+        };
+
+        $invitationAssertion();
 
         $project->invite($chris);
 
-        $this->actingAs($chris)
-        ->patch(route('projects.invite',$project),[
-        'email' => $john->email])
-        ->assertStatus(403);
+        $invitationAssertion();
 
     }
 
@@ -46,6 +47,9 @@ class InvitationsTest extends TestCase
         $project = ProjectFactory::create();
 
         $user_a = factory('App\User')->create();
+
+        // a project owner can see invitation section input
+        $this->actingAs($project->owner)->get($project->path())->assertSeeText('Invite a User');
 
         $this->actingAs($project->owner)->patch($project->path()."/invitations", [
             'email' => $user_a->email
@@ -80,22 +84,27 @@ class InvitationsTest extends TestCase
     /** @test */
     public function the_invited_email_address_must_be_associated_with_a_valid_birdboard_account(){
 
+        // $this->withoutExceptionHandling();
+        
+
         $project = ProjectFactory::create();
 
         $this->actingAs($project->owner)
             ->patch(route('projects.invite',$project), ['email' => ''])
             ->assertSessionHasErrors([
                 'email' => 'Please enter email.'
-            ]);
+            ], null, 'invitations');
         
         $this->actingAs($project->owner)
             ->patch(route('projects.invite',$project), ['email' => 'nonser@example.com'])
             ->assertSessionHasErrors([
                 'email' => 'The user you are inviting must have a birdboard account.'
-            ]);
+            ], null, 'invitations');
 
         
         
     }
+
+
    
 }

@@ -1,4 +1,4 @@
-<div class="card mt-3">
+<div class="card mt-3 text-default">
 
     <ul class="text-xs">
         @foreach ($project->activities as $activity)
@@ -8,7 +8,7 @@
                     $log_view = str_replace(' ','_',$activity->description);   
                 @endphp
                 @include('projects.activities.'.$log_view) 
-                <span class="text-gray-lighter ml-2">{{$activity->created_at->diffForHumans()}}</span>
+                <span class="text-default ml-2">{{$activity->created_at->diffForHumans()}}</span>
             
             </li>
 

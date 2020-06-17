@@ -41,25 +41,13 @@ class ProjectsTest extends TestCase
         
         $this->get('/projects/create')->assertStatus(200)->assertViewIs('projects.create');
         
-        $attributes = factory('App\Project')->raw([
-            'owner_id'=>auth()->id(),
-            'notes' => 'General notes here.'
-            ]);
-
-        $response = $this->post('/projects', $attributes);
-
-        $project = Project::where($attributes)->first();
-
-        $response->assertRedirect($project->path());
-
-        $this->assertDatabaseHas('projects', $attributes);
-
-        $this->get('/projects')->assertSee($attributes['title']);
-
-        $this->get($project->path())
+        $this->followingRedirects()
+            ->post('/projects', $attributes = factory('App\Project')->raw(['owner_id'=>auth()->id()]))
             ->assertSee($attributes['title'])
             ->assertSee($attributes['description'])
             ->assertSee($attributes['notes']);
+
+        $this->assertDatabaseHas('projects', $attributes);
     }
 
 
@@ -94,6 +82,25 @@ class ProjectsTest extends TestCase
         $this->signIn();
 
         $this->delete($project->path())->assertStatus(403);
+        
+    }
+
+
+    /** @test */
+    public function an_invited_user_cannot_delete_owner_projects(){
+
+        // create a project by owner
+        $project = ProjectFactory::create();
+
+        // create another user for invitation
+        $john = factory('App\User')->create();
+
+        // invite new user
+        $project->invite($john);
+        
+        //an invited user receive action denied 403 from trying to delete a project
+        $this->actingAs($john)->delete($project->path())->assertStatus(403);
+        
         
     }
 

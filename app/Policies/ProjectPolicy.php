@@ -27,4 +27,11 @@ class ProjectPolicy
     }
 
 
+    public function manage(User $user, Project $project){
+
+        return $user->is($project->owner);
+        
+    }
+
+
 }
