@@ -37,9 +37,16 @@ class UserTest extends TestCase
 
         $project_sally = ProjectFactory::ownedBy($sally)->create();
 
+        $nick = factory('App\User')->create();
+
+        $project_sally->invite($nick);
+
+        $this->assertCount(1, $john->accessibleProjects());
+
         $project_sally->invite($john);
 
         $this->assertCount(2, $john->accessibleProjects());
+
         
     }
     
