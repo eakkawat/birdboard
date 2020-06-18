@@ -1,23 +1,39 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
+    <div class="flex items-center mr-8">
 
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button v-for="(color, theme) in themes" :key="theme"
+            class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2" 
+            :style="{ backgroundColor: color }"
+            @click = "selectedTheme= theme">
+        </button>
+
     </div>
 </template>
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
+        data() {
+            return {
+                themes: {
+                    'theme-light': '#f5f6f9',
+                    'theme-dark': '#222'
+                },
+                selectedTheme: 'theme-light'
+            };
+        },
+
+        created() {
+            this.selectedTheme = localStorage.getItem('theme') || 'theme-light';
+        },
+
+        watch: {
+
+            selectedTheme() {
+                document.body.className = document.body.className.replace(/theme-\w+/, this.selectedTheme);
+
+                localStorage.setItem('theme', this.selectedTheme);
+            }
+            
         }
     }
 </script>
