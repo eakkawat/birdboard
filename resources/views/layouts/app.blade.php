@@ -24,7 +24,7 @@
 </head>
 <body class="theme-light bg-page">
     <div id="app">
-        <nav class="bg-white">
+        <nav class="bg-header">
             <div class="container mx-auto px-8">
                 
                 <div class="flex justify-between items-center py-2">
@@ -48,7 +48,7 @@
     
                     <div>
                          <!-- Right Side Of Navbar -->
-                         <ul class="navbar-nav ml-auto text-default">
+                         <ul class=" flex items-center navbar-nav ml-auto text-default">
                             <!-- Authentication Links -->
                             @guest
                                 <li class="nav-item">
@@ -60,6 +60,11 @@
                                     </li>
                                 @endif
                             @else
+                                <div class="mr-8">
+                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
+                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
+                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
+                                </div>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }} <span class="caret"></span>
