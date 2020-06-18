@@ -60,11 +60,7 @@
                                     </li>
                                 @endif
                             @else
-                                <div class="mr-8">
-                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
-                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
-                                    <button class="rounded-full w-4 h-4 bg-default border border-gray-lighter mr-2"></button>
-                                </div>
+                               <theme-switcher></theme-switcher>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }} <span class="caret"></span>
