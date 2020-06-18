@@ -3,7 +3,9 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-@import 'variables';
+@import '_variables';
+@import 'themes/light.scss';
+@import 'themes/dark.scss';
 
 // Bootstrap
 // @import '~bootstrap/scss/bootstrap';
@@ -29,26 +31,8 @@
 @tailwind utilities;
 
 
-.theme-light {
-
-  --page-background-color: #F5F6F9;
-  --card-background-color: white;
-  --button-background-color: #47D5FE;
-  --header-background-color: white;
-
-  --text-default-color: black;
-  
-}
 
 
-.theme-dark {
 
-  --page-background-color: #17181E;
-  --card-background-color: #1F2027;
-  --button-background-color: #59B6F9;
-  --header-background-color: #1F2027;
 
-  --text-default-color: white;
-  
-}
 

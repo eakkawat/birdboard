@@ -8,7 +8,8 @@ use App\Task;
 
 class ProjectTasksController extends Controller
 {
-    public function store(Project $project){
+    public function store(Project $project)
+    {
 
         $this->authorize('update', $project);
 
@@ -19,22 +20,21 @@ class ProjectTasksController extends Controller
         $project->addTask(request()->body);
 
         return redirect($project->path());
-        
     }
 
 
-    public function update(Project $project,Task $task){
+    public function update(Project $project, Task $task)
+    {
 
         $this->authorize('update', $task->project);
 
-        $attributes = request()->validate(['body'=>'required']);
+        $attributes = request()->validate(['body' => 'required']);
         $task->update($attributes);
 
-        $method = request('completed') ? 'complete':'incomplete';
+        $method = request('completed') ? 'complete' : 'incomplete';
         $task->$method();
-        
+
 
         return redirect()->back();
-        
     }
 }
