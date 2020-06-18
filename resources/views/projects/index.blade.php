@@ -58,5 +58,5 @@
         </footer>
     </modal>
 
-    <a href="#" @click.prevent = "$modal.show('hello-world')">hello</a>
+    <a href="#" @click.prevent = "$modal.show('hello-world')">Add task</a>
 @endsection
