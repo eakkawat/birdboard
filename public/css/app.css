@@ -640,6 +640,17 @@ video {
   box-shadow: 0 2px 7px 0 #b0eaff;
 }
 
+.btn.is-outlined {
+  background-color: var(--card-background-color);
+  border-width: 1px;
+  --border-opacity: 1;
+  border-color: #47D5FE;
+  border-color: rgba(71, 213, 254, var(--border-opacity));
+  --text-opacity: 1;
+  color: #47D5FE;
+  color: rgba(71, 213, 254, var(--text-opacity));
+}
+
 .card {
   background-color: var(--card-background-color);
   border-radius: 0.5rem;
