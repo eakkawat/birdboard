@@ -15,15 +15,15 @@
                             id="title"
                             v-model="form.title"
                             :class="
-                                errors.title ? 'border-error' : 'border-muted'
+                                form.errors.title ? 'border-error' : 'border-muted'
                             "
                             placeholder="My awesome nexr project"
                             class="border rounded py-2 px-2 text-xs block w-full "
                         />
                         <p
                             class="text-xs text-italic text-error"
-                            v-if="errors.title"
-                            v-text="errors.title[0]"
+                            v-if="form.errors.title"
+                            v-text="form.errors.title[0]"
                         ></p>
                     </div>
                     <div class="mb-4">
@@ -33,7 +33,7 @@
                         <textarea
                             v-model="form.description"
                             :class="
-                                errors.description
+                                form.errors.description
                                     ? 'border-error'
                                     : 'border-muted'
                             "
@@ -44,8 +44,8 @@
                         ></textarea>
                         <p
                             class="text-xs text-italic text-error"
-                            v-if="errors.description"
-                            v-text="errors.description[0]"
+                            v-if="form.errors.description"
+                            v-text="form.errors.description[0]"
                         ></p>
                     </div>
                 </div>
@@ -116,15 +116,17 @@
 </template>
 
 <script>
+
+import BirdboardForm from './BirdboardForm.js'
+
 export default {
     data() {
         return {
-            form: {
+            form: new BirdboardForm({
                 title: "",
                 description: "",
                 tasks: [{ body: "" }]
-            },
-            errors: {}
+            })
         };
     },
 
@@ -134,14 +136,13 @@ export default {
         },
 
         async submit() {
-            try {
-                // let response = await axios.post('/projects', this.form);
-                // location = response.data.redirect_url;
 
-                location = await axios.post("/projects", this.form);
-            } catch (error) {
-                this.errors = error.response.data.errors;
+            if(! this.form.tasks[0].body){
+                delete this.form.originalData.tasks;
             }
+            
+            this.form.submit('/projects')
+                .then(response => location = response.data.redirect_url);
         }
     }
 };
