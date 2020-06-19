@@ -13,7 +13,9 @@ module.exports = {
         default:'#47D5FE'
       },
       red: "red",
-      default: 'var(--text-default-color)'
+      default: 'var(--text-default-color)',
+      muted: 'var(--text-muted-color)',
+      error: 'var(--text-error-color)'
       
     },
 

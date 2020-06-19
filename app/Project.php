@@ -37,6 +37,13 @@ class Project extends Model
     }
 
 
+    public function addTasks($tasks){
+
+        return $this->tasks()->createMany($tasks);
+
+    }
+
+
     public function activities(){
 
         return $this->hasMany('App\Activity')->latest();
