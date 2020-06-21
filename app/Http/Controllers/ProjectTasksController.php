@@ -8,14 +8,18 @@ use App\Task;
 
 class ProjectTasksController extends Controller
 {
+    /**
+     * Add project
+     *
+     * @param Project $project
+     * @return back
+     */
     public function store(Project $project)
     {
 
         $this->authorize('update', $project);
 
-        request()->validate([
-            'body' => 'required'
-        ]);
+        request()->validate(['body' => 'required']);
 
         $project->addTask(request()->body);
 
@@ -23,6 +27,13 @@ class ProjectTasksController extends Controller
     }
 
 
+    /**
+     * Update project
+     *
+     * @param Project $project
+     * @param Task $task
+     * @return back
+     */
     public function update(Project $project, Task $task)
     {
 
