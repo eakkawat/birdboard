@@ -1,0 +1,9 @@
+.dropdown-menu-link {
+
+    @apply block mb-2 px-4 w-full text-left;
+
+    &:hover {
+        background: rgb(0,0,0,0.1);
+    }
+
+}

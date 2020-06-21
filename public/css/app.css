@@ -658,6 +658,19 @@ video {
   padding: 1.25rem;
 }
 
+.dropdown-menu-link {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu-link:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .space-y-0 > :not(template) ~ :not(template){
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
