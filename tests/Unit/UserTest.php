@@ -3,30 +3,25 @@
 namespace Tests\Unit;
 
 use Facades\Tests\Setup\ProjectFactory;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\Collection;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_has_projects(){
-
+    public function a_user_has_projects()
+    {
         $user = factory('App\User')->create();
 
         $this->assertInstanceOf(Collection::class, $user->projects);
-
     }
 
-
     /** @test */
-    public function a_user_has_accessible_projects(){
-
+    public function a_user_has_accessible_projects()
+    {
         $john = factory('App\User')->create();
 
         $project = ProjectFactory::ownedBy($john)->create();
@@ -46,8 +41,5 @@ class UserTest extends TestCase
         $project_sally->invite($john);
 
         $this->assertCount(2, $john->accessibleProjects());
-
-        
     }
-    
 }

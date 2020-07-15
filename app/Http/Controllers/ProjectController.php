@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProjectRequest;
-use Illuminate\Http\Request;
 use App\Project;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +15,6 @@ class ProjectController extends Controller
      */
     public function index()
     {
-
         $projects = auth()->user()->accessibleProjects();
 
         return view('projects.index', compact('projects'));
@@ -35,17 +33,21 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-
         $project = auth()->user()->projects()->create($this->validateRequest());
 
-        if ($request->has('tasks')) $project->addTasks($request->tasks);
+        if ($request->has('tasks')) {
+            $project->addTasks($request->tasks);
+        }
 
-        if ($request->wantsJson()) return ['redirect_url' => $project->path()];
+        if ($request->wantsJson()) {
+            return ['redirect_url' => $project->path()];
+        }
 
         return redirect($project->path());
     }
@@ -53,7 +55,8 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Project $project)
@@ -66,32 +69,33 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Project $project)
     {
-
         return view('projects.edit', compact('project'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateProjectRequest $form)
     {
-
         return redirect($form->save()->path());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Project $project)
@@ -103,14 +107,12 @@ class ProjectController extends Controller
         return redirect()->route('projects.index');
     }
 
-
     protected function validateRequest()
     {
-
         return request()->validate([
-            'title' => 'sometimes|required',
+            'title'       => 'sometimes|required',
             'description' => 'sometimes|required',
-            'notes' => 'nullable'
+            'notes'       => 'nullable',
         ]);
     }
 }

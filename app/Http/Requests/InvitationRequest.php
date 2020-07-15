@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Gate;
 
 class InvitationRequest extends FormRequest
 {
-
     protected $errorBag = 'invitations';
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,7 +17,6 @@ class InvitationRequest extends FormRequest
     public function authorize()
     {
         return Gate::allows('manage', $this->route('project'));
-    
     }
 
     /**
@@ -29,15 +27,15 @@ class InvitationRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|exists:users,email'
+            'email' => 'required|exists:users,email',
         ];
     }
 
-    public function messages(){
-
+    public function messages()
+    {
         return [
-            'email.exists' => 'The user you are inviting must have a birdboard account.',
-            'email.required' => 'Please enter email.'
+            'email.exists'   => 'The user you are inviting must have a birdboard account.',
+            'email.required' => 'Please enter email.',
         ];
     }
 }

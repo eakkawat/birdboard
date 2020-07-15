@@ -3,36 +3,30 @@
 namespace Tests\Feature;
 
 use App\Task;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Facades\Tests\Setup\ProjectFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class TriggerActivityTest extends TestCase
 {
-
     use RefreshDatabase;
 
     /** @test */
-    function create_a_project(){
-
+    public function create_a_project()
+    {
         $project = ProjectFactory::create();
 
         $this->assertCount(1, $project->activities);
 
-        
-
-        tap($project->activities->last(), function($activity){
+        tap($project->activities->last(), function ($activity) {
             $this->assertEquals('created project', $activity->description);
             $this->assertNull($activity->changes);
         });
-        
     }
 
-
     /** @test */
-    function update_a_project(){
-
+    public function update_a_project()
+    {
         $this->withoutExceptionHandling();
 
         $project = ProjectFactory::create();
@@ -43,44 +37,38 @@ class TriggerActivityTest extends TestCase
 
         $this->assertCount(2, $project->activities);
 
-        tap($project->activities->last(), function($activity) use ($origin_title){
-
+        tap($project->activities->last(), function ($activity) use ($origin_title) {
             $this->assertEquals('updated project', $activity->description);
 
             $expected = [
                 'before' => ['title' => $origin_title],
-                'after' => ['title' => 'updated']
+                'after'  => ['title' => 'updated'],
             ];
 
             $this->assertEquals($expected, $activity->changes);
-            
         });
-                
     }
 
-
     /** @test */
-    function create_a_task(){
-
+    public function create_a_task()
+    {
         $project = ProjectFactory::create();
 
         // $task = factory('App\Task')->create(['project_id' => $project->id]);
         $project->addTask('some task');
-        
+
         $this->assertCount(2, $project->activities);
 
-        tap($project->activities->last(), function($activity){
-
+        tap($project->activities->last(), function ($activity) {
             $this->assertEquals('created task', $activity->description);
             $this->assertInstanceOf(Task::class, $activity->subject);
             $this->assertEquals('some task', $activity->subject->body);
-            
         });
     }
 
-
     /** @test */
-    function completing_a_task(){
+    public function completing_a_task()
+    {
 
         // $this->withoutExceptionHandling();
 
@@ -88,54 +76,44 @@ class TriggerActivityTest extends TestCase
 
         $this->actingAS($project->owner)
             ->patch($project->tasks->first()->path(), [
-                'body' => 'updated',
-                'completed' => true
+                'body'      => 'updated',
+                'completed' => true,
             ]);
-
 
         $this->assertCount(3, $project->activities);
 
         $project = $project->refresh();
 
-
-        tap($project->activities->last(), function($activity){
-
+        tap($project->activities->last(), function ($activity) {
             $this->assertEquals('completed task', $activity->description);
 
             $this->assertInstanceOf(Task::class, $activity->subject);
-
         });
     }
 
-
     /** @test */
-    function incompleting_a_task(){
-
+    public function incompleting_a_task()
+    {
         $this->withoutExceptionHandling();
 
         $project = ProjectFactory::ownedBy($this->signIn())->withTasks(1)->create();
 
-        $this->patch($project->tasks->first()->path(), ['body'=>'updated','completed'=>true]);
-        $this->patch($project->tasks->first()->path(), ['body'=>'updated','completed'=>false]);
-
+        $this->patch($project->tasks->first()->path(), ['body'=>'updated', 'completed'=>true]);
+        $this->patch($project->tasks->first()->path(), ['body'=>'updated', 'completed'=>false]);
 
         $project = $project->refresh();
         $this->assertCount(4, $project->activities);
 
-        tap($project->activities->last(), function($activity){
-
+        tap($project->activities->last(), function ($activity) {
             $this->assertEquals('incompleted task', $activity->description);
 
             $this->assertInstanceOf(Task::class, $activity->subject);
-            
         });
-        
     }
 
-
     /** @test */
-    function delete_a_task(){
-
+    public function delete_a_task()
+    {
         $project = ProjectFactory::ownedBy($this->signIn())->withTasks(1)->create();
 
         // $this->delete($project->tasks->first()->path());
@@ -144,7 +122,5 @@ class TriggerActivityTest extends TestCase
         $this->assertCount(3, $project->fresh()->activities);
 
         $this->assertEquals('deleted task', $project->fresh()->activities->last()->description);
-        
     }
-    
 }
