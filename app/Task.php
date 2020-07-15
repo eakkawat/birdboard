@@ -17,39 +17,32 @@ class Task extends Model
 
     protected static $recordableEvents = ['created', 'deleted'];
 
-
-    
-    public function project(){
+    public function project()
+    {
         return $this->belongsTo('App\Project');
     }
 
-
-    public function path(){
+    public function path()
+    {
         return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
 
-
-    public function complete(){
-
+    public function complete()
+    {
         $this->recordActivity('completed task');
 
         $this->update(['completed' => true]);
-        
     }
 
-
-    public function incomplete(){
-
+    public function incomplete()
+    {
         $this->recordActivity('incompleted task');
 
         $this->update(['completed' => false]);
-        
     }
 
-
-    public function activities(){
-
-        return $this->morphMany('App\Activity','subject')->latest();
-        
+    public function activities()
+    {
+        return $this->morphMany('App\Activity', 'subject')->latest();
     }
 }

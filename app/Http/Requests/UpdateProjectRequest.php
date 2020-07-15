@@ -26,17 +26,19 @@ class UpdateProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'sometimes|required',
+            'title'       => 'sometimes|required',
             'description' => 'sometimes|required',
-            'notes' => 'nullable'
+            'notes'       => 'nullable',
         ];
     }
 
-    public function project(){
+    public function project()
+    {
         return Project::findOrFail($this->route('project'));
     }
 
-    public function save(){
+    public function save()
+    {
         return tap($this->project())->update($this->validated());
     }
 }
